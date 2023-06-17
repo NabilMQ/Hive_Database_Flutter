@@ -1,2 +1,2 @@
 # hive_database
-Using Hive for Flutter App Database
+A simple flutter app that use hive database to store person name and age
