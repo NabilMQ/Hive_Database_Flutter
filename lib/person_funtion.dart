@@ -23,7 +23,7 @@ mixin pFunc {
   }
 
   static bool isBlank(String s) {
-    if (s == "" || s == null) {
+    if (s == "") {
       return true;
     }
     return false;

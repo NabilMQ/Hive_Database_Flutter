@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'data.dart';
 import 'add_person.dart';
@@ -16,10 +17,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       useInheritedMediaQuery: true,
-      home: HomePage(),
+      scrollBehavior: CustomScroll(),
+      home: const HomePage(),
     );
   }
 }
@@ -45,6 +47,7 @@ class _HomePageState extends State <HomePage> {
           }
           else {
             return ListView.builder(
+              physics: const BouncingScrollPhysics(),
               itemCount: box.values.length,
               itemBuilder: (context, index) {
                 Person? currPerson = box.getAt(index);
@@ -60,14 +63,14 @@ class _HomePageState extends State <HomePage> {
                             content: Text("Are you sure want to delete ${currPerson.name}?"),
                             actions: [
                               ElevatedButton(
-                                child: Text("No"),
-                                onPressed: () => Navigator.of(ctx).pop,
+                                child: const Text("No"),
+                                onPressed: () => Navigator.of(ctx).pop(),
                               ),
 
                               ElevatedButton(
-                                child: Text("Yes"),
-                                onPressed: () async {
-                                  await box.deleteAt(index);
+                                child: const Text("Yes"),
+                                onPressed: () {
+                                  box.deleteAt(index);
                                   Navigator.of(ctx).pop();
                                 },
                               ),
@@ -82,9 +85,9 @@ class _HomePageState extends State <HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 5),
-                          Text(currPerson!.name),
+                          Text("Name: ${currPerson!.name}"),
                           const SizedBox(height: 5),
-                          Text(currPerson.age.toString()),
+                          Text("Age: ${currPerson.age.toString()}"),
                           const SizedBox(height: 5),
                         ],
                       ),
@@ -105,4 +108,16 @@ class _HomePageState extends State <HomePage> {
       )
     );  
   }
+}
+
+class CustomScroll extends MaterialScrollBehavior {
+  @override
+
+  Set <PointerDeviceKind> get dragDevices => {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.stylus,
+    PointerDeviceKind.invertedStylus,
+    PointerDeviceKind.trackpad,
+  };
 }
