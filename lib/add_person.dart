@@ -12,6 +12,26 @@ class AddPerson extends StatefulWidget {
 class _AddPersonState extends State<AddPerson> {
 
   @override
+  void initState() {
+    super.initState();
+    pFunc.name = null;
+    pFunc.age = null;
+    pFunc.nameValue = false;
+    pFunc.ageValue = false;
+    pFunc.ageError = false;
+  }
+
+  @override
+  void dispose() {
+    pFunc.name = null;
+    pFunc.age = null;
+    pFunc.nameValue = false;
+    pFunc.ageValue = false;
+    pFunc.ageError = false;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -28,15 +48,18 @@ class _AddPersonState extends State<AddPerson> {
                     initialValue: null,
                     decoration: pFunc.inputDecorationName,
                     onChanged: (value) {
-                      setState(() {
-                        if (pFunc.isBlank(value)) {
+                      if (pFunc.isBlank(value)) {
+                        setState(() {
                           pFunc.nameValue = false;
-                        }
-                        else {
+                        });
+                      }
+                      else {
+                        setState(() {
+                          pFunc.toNormalFieldName();
                           pFunc.name = value;
                           pFunc.nameValue = true;
-                        }
-                      });
+                        });
+                      }
                     },
                   ),
 
@@ -48,17 +71,19 @@ class _AddPersonState extends State<AddPerson> {
                     onChanged: (value) {
                       if (pFunc.isBlank(value)) {
                         setState(() {
-                          pFunc.toNormalFieldAge(value);
-                          pFunc.age = int.parse(value);
+                          pFunc.toNormalFieldAge();
+                          pFunc.age = null;
                           pFunc.ageValue = false;
+                          pFunc.ageError = false;
                         });
                       }
                       else {
                         setState(() {
                           try {
-                            pFunc.toNormalFieldAge(value);
+                            pFunc.toNormalFieldAge();
                             pFunc.age = int.parse(value);
                             pFunc.ageValue = true;
+                            pFunc.ageError = false;
                             if (pFunc.containsSpace(value)) {
                               throw const FormatException();
                             }
@@ -66,6 +91,7 @@ class _AddPersonState extends State<AddPerson> {
                           catch (error) {
                             pFunc.ageFieldError();
                             pFunc.ageValue = false;
+                            pFunc.ageError = true;
                           }
                         });
                       }
@@ -75,17 +101,19 @@ class _AddPersonState extends State<AddPerson> {
                   OutlinedButton(
                     child: const Text("Submit"),
                     onPressed: () {
-                      setState(() {
-                        if (pFunc.isAllFieldBlank(pFunc.nameValue, pFunc.ageValue)) {
-                            pFunc.allFieldBlank();
-                        }
-                        else {
+                      if (pFunc.isFieldFilled(pFunc.nameValue, pFunc.ageValue)) {
+                        setState(() {
                           pFunc.addPersonData();
                           Navigator.of(context).pop();
-                        }
-                      });
+                        });
+                      }
+                      else {
+                        setState(() {
+                          pFunc.checkField(pFunc.nameValue, pFunc.ageValue, pFunc.ageError);
+                        });
+                      }
                     },
-                  )
+                  ),
                 ],
               ),
             ),

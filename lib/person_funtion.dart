@@ -8,6 +8,7 @@ mixin pFunc {
   static int? age;
   static bool nameValue = false;
   static bool ageValue = false;
+  static bool ageError = false;
 
   static InputDecoration inputDecorationName = const InputDecoration(
     labelText: "Name",
@@ -22,7 +23,7 @@ mixin pFunc {
   }
 
   static bool isBlank(String s) {
-    if (s == "") {
+    if (s == "" || s == null) {
       return true;
     }
     return false;
@@ -35,9 +36,15 @@ mixin pFunc {
     return false;
   }
 
-  static void toNormalFieldAge(value) {
+  static void toNormalFieldAge() {
     inputDecorationAge = const InputDecoration(
       labelText: "Age",
+    );
+  }
+
+  static void toNormalFieldName() {
+    inputDecorationName = const InputDecoration(
+      labelText: "Name",
     );
   }
 
@@ -48,21 +55,27 @@ mixin pFunc {
     );
   }
 
-  static bool isAllFieldBlank(bool a, bool b) {
-    if (a == false && b == false) {
+  static void checkField(bool a, bool b, bool c) {
+    if (!a) {
+      inputDecorationName = const InputDecoration(
+        labelText: "Name",
+        errorText: "Fill the field",
+      );
+    }
+
+    if (!b && !c) {
+      inputDecorationAge = const InputDecoration(
+        labelText: "Age",
+        errorText: "Fill the field",
+      ); 
+    }
+  }
+
+  static bool isFieldFilled(bool a, bool b) {
+    if (a && b) {
       return true;
     }
     return false;
   }
 
-  static void allFieldBlank() {
-    inputDecorationName = const InputDecoration(
-      labelText: "Name",
-      errorText: "Fill the field",
-    );
-    inputDecorationAge = const InputDecoration(
-      labelText: "Age",
-      errorText: "Fill the field",
-    ); 
-  }
 }
